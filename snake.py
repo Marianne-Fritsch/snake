@@ -17,6 +17,9 @@ while running:
 
     clock.tick(1)
     
+    # les coordonnées du corps du serpent
+    snake = [(10, 15),(11, 15),(12, 15)]
+
     for i in range(0,601,40):
         for j in range(0,601,40) :
             # les coordonnées de rectangle que l'on dessine
@@ -40,7 +43,15 @@ while running:
             # appel à la méthode draw.rect()
             color = (255, 0, 0) # couleur rouge
             pg.draw.rect(screen, color, rect)
-                    
+    
+    for k in snake : 
+        m,n = k
+        width,height = 20,20
+        color = (0,255,0)
+        rect = pg.Rect(m*width, n*height, width, height)
+        pg.draw.rect(screen, color, rect)
+
+
 
     # on itère sur tous les évênements qui ont eu lieu depuis le précédent appel
     # ici donc tous les évènements survenus durant la seconde précédente
