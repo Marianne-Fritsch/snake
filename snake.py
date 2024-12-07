@@ -1,3 +1,11 @@
+#POUR LA PROCHAINE FOIS : transformer le snake en deque et ses éléments (des tuples) en namedtuples 
+# (cf 
+# from collections import namedtuple 
+# Cell = namedtuple("Cell",["x","y"], defaults=(2,2))
+# )
+
+
+
 
 from random import randint
 import pygame as pg
@@ -10,56 +18,81 @@ clock = pg.time.Clock()
 snake = [(10, 15),(11, 15),(12, 15)]
 direction = (1,0)
 
+width = 20 # largeur du rectangle en pixels
+height = 20 # hauteur du rectangle en pixels
+
 # on rajoute une condition à la boucle: si on la passe à False le programme s'arrête
 running = True
 white = (255,255,255)
 black = (0,0,0)
 red = (255, 0, 0)
 green = (0,255,0)
+blue = (0,0,255)
 screen.fill(white)
+
+for i in range(0,601,2*width):
+    for j in range(0,601,2*width) :
+        # les coordonnées de rectangle que l'on dessine
+        x = i # coordonnée x (colonnes) en pixels
+        y = j # coordonnée y (lignes) en pixels
+        rect = pg.Rect(x, y, width, height)
+        # appel à la méthode draw.rect()
+        color = (255, 0, 0) # couleur rouge
+        pg.draw.rect(screen, color, rect)
+
+for i in range(20,601,2*width): 
+    for j in range(20,601,2*width) :
+        # les coordonnées de rectangle que l'on dessine
+        x = i # coordonnée x (colonnes) en pixels
+        y = j # coordonnée y (lignes) en pixels
+        rect = pg.Rect(x, y, width, height)
+        # appel à la méthode draw.rect()
+        color = red # couleur rouge
+        pg.draw.rect(screen, color, rect)
+
+
+fruit = (5,5)    
 
 while running:
 
-    clock.tick(1)
-    
+    clock.tick(4)
+
+    rect_fruit = pg.Rect(fruit[0]*width, fruit[1]*height, width, height)
+    pg.draw.rect(screen,blue,rect_fruit)
+
+
     #snake movement
     first_x,first_y = snake[0]
     direction_x,direction_y = direction
-    snake.pop()
+    queue = snake.pop()
     snake.insert(0, (first_x + direction_x, first_y + direction_y))
 
+    ############
+
+    n,m = queue
+    if queue == fruit : 
+        snake.append(queue)
+        while fruit in snake : 
+            fruit = (randint(0,600//width),randint(0,600//width))
 
 
-    for i in range(0,601,40):
-        for j in range(0,601,40) :
-            # les coordonnées de rectangle que l'on dessine
-            x = i # coordonnée x (colonnes) en pixels
-            y = j # coordonnée y (lignes) en pixels
-            width = 20 # largeur du rectangle en pixels
-            height = 20 # hauteur du rectangle en pixels
-            rect = pg.Rect(x, y, width, height)
-            # appel à la méthode draw.rect()
-            color = (255, 0, 0) # couleur rouge
-            pg.draw.rect(screen, color, rect)
-    
-    for i in range(20,601,40):
-        for j in range(20,601,40) :
-            # les coordonnées de rectangle que l'on dessine
-            x = i # coordonnée x (colonnes) en pixels
-            y = j # coordonnée y (lignes) en pixels
-            width = 20 # largeur du rectangle en pixels
-            height = 20 # hauteur du rectangle en pixels
-            rect = pg.Rect(x, y, width, height)
-            # appel à la méthode draw.rect()
-            color = (255, 0, 0) # couleur rouge
-            pg.draw.rect(screen, color, rect)
-    
+    else : 
+        rect = pg.Rect(n*width, m*height, width, height)
+        if (n+m)%2 == 1 :
+            pg.draw.rect(screen,white,rect)
+        else :
+            pg.draw.rect(screen,red,rect)
+
+
+
     for k in snake : 
         m,n = k
         width,height = 20,20
-        color = (0,255,0)
+        color = green
         rect = pg.Rect(m*width, n*height, width, height)
         pg.draw.rect(screen, color, rect)
+    
+
 
     # = (1,0)
     #down = (-1,0)
@@ -69,6 +102,7 @@ while running:
 
     # on itère sur tous les évênements qui ont eu lieu depuis le précédent appel
     # ici donc tous les évènements survenus durant la seconde précédente
+    
     for event in pg.event.get():
         # chaque évênement à un type qui décrit la nature de l'évênement
         # un type de pg.QUIT signifie que l'on a cliqué sur la "croix" de la fenêtre
@@ -79,14 +113,16 @@ while running:
             # si la touche est "Q" on veut quitter le programme
             if event.key == pg.K_q:
                 running = False
-            if event.key == pg.K_UP:
+            if event.key == pg.K_UP and direction != (0,1):
                 direction = (0,-1)
-            if event.key == pg.K_DOWN:
+            if event.key == pg.K_DOWN and direction != (0,-1):
                 direction = (0,1)
-            if event.key == pg.K_RIGHT:
+            if event.key == pg.K_RIGHT and direction != (-1,0):
                 direction = (1,0)
-            if event.key == pg.K_LEFT:
+            if event.key == pg.K_LEFT and direction != (1,0):
                 direction = (-1,0)
+
+
 
 
 
@@ -101,7 +137,6 @@ while running:
 # Enfin on rajoute un appel à pg.quit()
 # Cet appel va permettre à Pygame de "bien s'éteindre" et éviter des bugs sous Windows
 pg.quit()
-
 
 
 
