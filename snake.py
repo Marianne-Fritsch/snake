@@ -16,7 +16,7 @@ clock = pg.time.Clock()
 
 # les coordonnées du corps du serpent
 snake = [(10, 15),(11, 15),(12, 15)]
-direction = (1,0)
+direction = (0,1)
 
 width = 20 # largeur du rectangle en pixels
 height = 20 # hauteur du rectangle en pixels
@@ -53,13 +53,13 @@ for i in range(20,601,2*width):
 
 fruit = (5,5)    
 
+score = 0
+
 while running:
 
-    clock.tick(4)
+    clock.tick(6)
 
-    rect_fruit = pg.Rect(fruit[0]*width, fruit[1]*height, width, height)
-    pg.draw.rect(screen,blue,rect_fruit)
-
+    pg.display.set_caption(f"Score: {score}")
 
     #snake movement
     first_x,first_y = snake[0]
@@ -72,6 +72,7 @@ while running:
     n,m = queue
     if queue == fruit : 
         snake.append(queue)
+        score += 1
         while fruit in snake : 
             fruit = (randint(0,600//width),randint(0,600//width))
 
@@ -83,7 +84,8 @@ while running:
         else :
             pg.draw.rect(screen,red,rect)
 
-
+    rect_fruit = pg.Rect(fruit[0]*width, fruit[1]*height, width, height)
+    pg.draw.rect(screen,blue,rect_fruit)
 
     for k in snake : 
         m,n = k
@@ -122,7 +124,9 @@ while running:
             if event.key == pg.K_LEFT and direction != (1,0):
                 direction = (-1,0)
 
-
+    if snake[0] in snake[1::] :
+        running = False
+    
 
 
 
