@@ -9,17 +9,22 @@
 
 from random import randint
 import pygame as pg
+import collections
+from collections import namedtuple
+from collections import deque
 
 pg.init()
 screen = pg.display.set_mode((600, 600))
 clock = pg.time.Clock()
 
 # les coordonnées du corps du serpent
-snake = [(10, 15),(11, 15),(12, 15)]
+#snake = [(10, 15),(11, 15),(12, 15)]
 direction = (0,1)
 
+Cell = namedtuple("Cell",["x","y"], defaults=(2,2))
 width = 20 # largeur du rectangle en pixels
 height = 20 # hauteur du rectangle en pixels
+snake = deque([Cell(10, 15),Cell(11, 15),Cell(12, 15)])
 
 # on rajoute une condition à la boucle: si on la passe à False le programme s'arrête
 running = True
@@ -51,7 +56,7 @@ for i in range(20,601,2*width):
         pg.draw.rect(screen, color, rect)
 
 
-fruit = (5,5)    
+fruit = Cell(5,5)    
 
 score = 0
 
@@ -65,7 +70,7 @@ while running:
     first_x,first_y = snake[0]
     direction_x,direction_y = direction
     queue = snake.pop()
-    snake.insert(0, (first_x + direction_x, first_y + direction_y))
+    snake.insert(0, Cell(first_x + direction_x, first_y + direction_y))
 
     ############
 
@@ -88,7 +93,8 @@ while running:
     pg.draw.rect(screen,blue,rect_fruit)
 
     for k in snake : 
-        m,n = k
+        #m,n = k
+        m,n = k[0],k[1]
         width,height = 20,20
         color = green
         rect = pg.Rect(m*width, n*height, width, height)
@@ -124,7 +130,9 @@ while running:
             if event.key == pg.K_LEFT and direction != (1,0):
                 direction = (-1,0)
 
-    if snake[0] in snake[1::] :
+    a = snake.copy
+    b = a.popleft()
+    if b in a :
         running = False
     
 
